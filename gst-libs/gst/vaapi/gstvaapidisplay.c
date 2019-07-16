@@ -51,8 +51,8 @@ GST_DEBUG_CATEGORY (gst_debug_vaapi_display);
 G_DEFINE_TYPE_WITH_CODE (GstVaapiDisplay, gst_vaapi_display, GST_TYPE_OBJECT,
     _do_init);
 
-typedef struct _GstVaapiConfig GstVaapiConfig;
-struct _GstVaapiConfig
+typedef struct _GstVaapiProfileConfig GstVaapiProfileConfig;
+struct _GstVaapiProfileConfig
 {
   GstVaapiProfile profile;
   GstVaapiEntrypoint entrypoint;
@@ -263,14 +263,14 @@ static inline gboolean
 find_config (GArray * configs,
     GstVaapiProfile profile, GstVaapiEntrypoint entrypoint)
 {
-  GstVaapiConfig *config;
+  GstVaapiProfileConfig *config;
   guint i;
 
   if (!configs)
     return FALSE;
 
   for (i = 0; i < configs->len; i++) {
-    config = &g_array_index (configs, GstVaapiConfig, i);
+    config = &g_array_index (configs, GstVaapiProfileConfig, i);
     if (config->profile == profile && config->entrypoint == entrypoint)
       return TRUE;
   }
@@ -281,9 +281,9 @@ find_config (GArray * configs,
 static void
 append_h263_config (GArray * configs)
 {
-  GstVaapiConfig *config, tmp_config;
-  GstVaapiConfig *mpeg4_simple_config = NULL;
-  GstVaapiConfig *h263_baseline_config = NULL;
+  GstVaapiProfileConfig *config, tmp_config;
+  GstVaapiProfileConfig *mpeg4_simple_config = NULL;
+  GstVaapiProfileConfig *h263_baseline_config = NULL;
   guint i;
 
   if (!WORKAROUND_H263_BASELINE_DECODE_PROFILE)
@@ -293,7 +293,7 @@ append_h263_config (GArray * configs)
     return;
 
   for (i = 0; i < configs->len; i++) {
-    config = &g_array_index (configs, GstVaapiConfig, i);
+    config = &g_array_index (configs, GstVaapiProfileConfig, i);
     if (config->profile == GST_VAAPI_PROFILE_MPEG4_SIMPLE)
       mpeg4_simple_config = config;
     else if (config->profile == GST_VAAPI_PROFILE_H263_BASELINE)
@@ -311,8 +311,8 @@ append_h263_config (GArray * configs)
 static gint
 compare_profiles (gconstpointer a, gconstpointer b)
 {
-  const GstVaapiConfig *const config1 = (GstVaapiConfig *) a;
-  const GstVaapiConfig *const config2 = (GstVaapiConfig *) b;
+  const GstVaapiProfileConfig *const config1 = (GstVaapiProfileConfig *) a;
+  const GstVaapiProfileConfig *const config2 = (GstVaapiProfileConfig *) b;
 
   if (config1->profile == config2->profile)
     return config1->entrypoint - config2->entrypoint;
@@ -324,7 +324,7 @@ compare_profiles (gconstpointer a, gconstpointer b)
 static GArray *
 get_profiles (GArray * configs)
 {
-  GstVaapiConfig *config;
+  GstVaapiProfileConfig *config;
   GArray *out_profiles;
   guint i;
 
@@ -336,7 +336,7 @@ get_profiles (GArray * configs)
     return NULL;
 
   for (i = 0; i < configs->len; i++) {
-    config = &g_array_index (configs, GstVaapiConfig, i);
+    config = &g_array_index (configs, GstVaapiProfileConfig, i);
     g_array_append_val (out_profiles, config->profile);
   }
   return out_profiles;
@@ -470,10 +470,10 @@ ensure_profiles (GstVaapiDisplay * display)
     return TRUE;
   }
 
-  priv->decoders = g_array_new (FALSE, FALSE, sizeof (GstVaapiConfig));
+  priv->decoders = g_array_new (FALSE, FALSE, sizeof (GstVaapiProfileConfig));
   if (!priv->decoders)
     goto cleanup;
-  priv->encoders = g_array_new (FALSE, FALSE, sizeof (GstVaapiConfig));
+  priv->encoders = g_array_new (FALSE, FALSE, sizeof (GstVaapiProfileConfig));
   if (!priv->encoders)
     goto cleanup;
   priv->has_profiles = TRUE;
@@ -502,7 +502,7 @@ ensure_profiles (GstVaapiDisplay * display)
   }
 
   for (i = 0; i < n; i++) {
-    GstVaapiConfig config;
+    GstVaapiProfileConfig config;
 
     config.profile = gst_vaapi_profile (profiles[i]);
     if (!config.profile)
