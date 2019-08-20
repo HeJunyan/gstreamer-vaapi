@@ -125,7 +125,7 @@ gst_vaapiencode_get_property_subclass (GObject * object, guint prop_id,
 G_GNUC_INTERNAL
 gboolean
 gst_vaapiencode_class_install_properties (GstVaapiEncodeClass * klass,
-    GObjectClass * oclass);
+    GObjectClass * encoder_class);
 
 G_END_DECLS
 

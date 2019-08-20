@@ -578,8 +578,6 @@ static gboolean
 ensure_encoder (GstVaapiEncode * encode)
 {
   GstVaapiEncodeClass *klass = GST_VAAPIENCODE_GET_CLASS (encode);
-  GstVaapiEncoderStatus status;
-  GPtrArray *const prop_values = encode->prop_values;
   guint i;
 
   g_return_val_if_fail (klass->alloc_encoder, FALSE);
@@ -592,15 +590,16 @@ ensure_encoder (GstVaapiEncode * encode)
   if (!encode->encoder)
     return FALSE;
 
-  if (prop_values) {
-    for (i = 0; i < prop_values->len; i++) {
-      PropValue *const prop_value = g_ptr_array_index (prop_values, i);
-      status = gst_vaapi_encoder_set_property (encode->encoder, prop_value->id,
-          &prop_value->value);
-      if (status != GST_VAAPI_ENCODER_STATUS_SUCCESS)
-        return FALSE;
+  if (encode->prop_values->len) {
+    for (i = 0; i < encode->prop_values->len; i++) {
+      PropValue *const prop_value = g_ptr_array_index (encode->prop_values, i);
+      g_object_set_property ((GObject *) encode->encoder,
+          g_param_spec_get_name (prop_value->pspec), &prop_value->value);
     }
+    /* clear alll the cache */
+    g_ptr_array_remove_range (encode->prop_values, 0, encode->prop_values->len);
   }
+
   return TRUE;
 }
 
@@ -956,6 +955,9 @@ gst_vaapiencode_init (GstVaapiEncode * encode)
 
   gst_vaapi_plugin_base_init (GST_VAAPI_PLUGIN_BASE (encode), GST_CAT_DEFAULT);
   gst_pad_use_fixed_caps (plugin->srcpad);
+
+  encode->prop_values =
+      g_ptr_array_new_with_free_func ((GDestroyNotify) prop_value_free);
 }
 
 static void
@@ -1116,7 +1118,7 @@ gst_vaapiencode_get_property_subclass (GObject * object, guint prop_id,
    class are installed to encodeXXX class. */
 gboolean
 gst_vaapiencode_class_install_properties (GstVaapiEncodeClass * klass,
-    GObjectClass * oclass)
+    GObjectClass * encoder_class)
 {
   GObjectClass *const object_class = G_OBJECT_CLASS (klass);
   guint i, n_props, installed;
@@ -1125,8 +1127,8 @@ gst_vaapiencode_class_install_properties (GstVaapiEncodeClass * klass,
   GParamSpec *new_spec;
   GParamFlags flags;
 
-  if (oclass)
-    specs = g_object_class_list_properties (oclass, &n_props);
+  if (encoder_class)
+    specs = g_object_class_list_properties (encoder_class, &n_props);
   if (!specs)
     return FALSE;
 
