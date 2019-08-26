@@ -1805,7 +1805,9 @@ gst_vaapi_encoder_class_init (GstVaapiEncoderClass * klass)
       g_param_spec_uint ("bitrate",
           "Bitrate (kbps)",
           "The desired bitrate expressed in kbps (0: auto-calculate)",
-          0, 2000 * 1024, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          0, 2000 * 1024, 0,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiEncoder:target-percentage:
@@ -1816,7 +1818,9 @@ gst_vaapi_encoder_class_init (GstVaapiEncoderClass * klass)
       g_param_spec_uint ("target-percentage",
           "Target Percentage",
           "The desired target percentage of bitrate for variable rate "
-          "controls.", 1, 100, 70, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          "controls.", 1, 100, 70,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiEncoder:keyframe-period:
@@ -1827,7 +1831,9 @@ gst_vaapi_encoder_class_init (GstVaapiEncoderClass * klass)
       g_param_spec_uint ("keyframe-period",
           "Keyframe Period",
           "Maximal distance between two keyframes (0: auto-calculate)", 0,
-          G_MAXUINT32, 30, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_MAXUINT32, 30,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiEncoder:quality-level:
@@ -1839,7 +1845,9 @@ gst_vaapi_encoder_class_init (GstVaapiEncoderClass * klass)
           "Quality Level", "Encoding Quality Level "
           "(lower value means higher-quality/slow-encode, "
           " higher value means lower-quality/fast-encode)",
-          1, 7, 4, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          1, 7, 4,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVapiEncoder:roi-default-delta-qp
@@ -1851,7 +1859,9 @@ gst_vaapi_encoder_class_init (GstVaapiEncoderClass * klass)
           "The default delta-qp to apply to each Region of Interest"
           "(lower value means higher-quality, "
           "higher value means lower-quality)",
-          -10, 10, -10, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          -10, 10, -10,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiEncoder: trellis:
@@ -1864,7 +1874,9 @@ gst_vaapi_encoder_class_init (GstVaapiEncoderClass * klass)
       g_param_spec_boolean ("trellis",
           "Trellis Quantization",
           "The Trellis Quantization Method of Encoder",
-          FALSE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          FALSE,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 }
 
 static GstVaapiContext *

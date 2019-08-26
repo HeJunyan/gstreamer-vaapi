@@ -706,7 +706,8 @@ gst_vaapi_encoder_vp9_class_init (GstVaapiEncoderVP9Class * klass)
           "Rate Control", "Rate control mode",
           g_class_data.rate_control_get_type (),
           g_class_data.default_rate_control,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   g_object_class_install_property (object_class, ENCODER_VP9_PROP_TUNE,
       g_param_spec_enum ("tune",
@@ -714,7 +715,8 @@ gst_vaapi_encoder_vp9_class_init (GstVaapiEncoderVP9Class * klass)
           "Encoder tuning option",
           g_class_data.encoder_tune_get_type (),
           g_class_data.default_encoder_tune,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   g_object_class_install_property (object_class,
       ENCODER_VP9_PROP_LOOP_FILTER_LEVEL,
@@ -722,7 +724,8 @@ gst_vaapi_encoder_vp9_class_init (GstVaapiEncoderVP9Class * klass)
           "Loop Filter Level",
           "Controls the deblocking filter strength",
           0, 63, DEFAULT_LOOP_FILTER_LEVEL,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   g_object_class_install_property (object_class,
       ENCODER_VP9_PROP_SHARPNESS_LEVEL,
@@ -730,7 +733,8 @@ gst_vaapi_encoder_vp9_class_init (GstVaapiEncoderVP9Class * klass)
           "Sharpness Level",
           "Controls the deblocking filter sensitivity",
           0, 7, DEFAULT_SHARPNESS_LEVEL,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   g_object_class_install_property (object_class,
       ENCODER_VP9_PROP_YAC_Q_INDEX,
@@ -738,7 +742,8 @@ gst_vaapi_encoder_vp9_class_init (GstVaapiEncoderVP9Class * klass)
           "Luma AC Quant Table index",
           "Quantization Table index for Luma AC Coefficients",
           0, 255, DEFAULT_YAC_QINDEX,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   g_object_class_install_property (object_class,
       ENCODER_VP9_PROP_REF_PIC_MODE,
@@ -747,7 +752,8 @@ gst_vaapi_encoder_vp9_class_init (GstVaapiEncoderVP9Class * klass)
           "Reference Picture Selection Modes",
           gst_vaapi_encoder_vp9_ref_pic_mode_type (),
           GST_VAAPI_ENCODER_VP9_REF_PIC_MODE_0,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiEncoderVP9:cpb-length:
@@ -761,7 +767,8 @@ gst_vaapi_encoder_vp9_class_init (GstVaapiEncoderVP9Class * klass)
       g_param_spec_uint ("cpb-length",
           "CPB Length", "Length of the CPB_buffer/window_size in milliseconds",
           1, 10000, DEFAULT_CPB_LENGTH,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 }
 
 /**

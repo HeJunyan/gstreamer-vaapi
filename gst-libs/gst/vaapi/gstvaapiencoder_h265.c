@@ -2892,7 +2892,8 @@ gst_vaapi_encoder_h265_class_init (GstVaapiEncoderH265Class * klass)
           "Rate Control", "Rate control mode",
           g_class_data.rate_control_get_type (),
           g_class_data.default_rate_control,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiEncoderH265:tune:
@@ -2905,7 +2906,8 @@ gst_vaapi_encoder_h265_class_init (GstVaapiEncoderH265Class * klass)
           "Encoder tuning option",
           g_class_data.encoder_tune_get_type (),
           g_class_data.default_encoder_tune,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiEncoderH265:max-bframes:
@@ -2915,7 +2917,8 @@ gst_vaapi_encoder_h265_class_init (GstVaapiEncoderH265Class * klass)
   g_object_class_install_property (object_class, ENCODER_H265_PROP_MAX_BFRAMES,
       g_param_spec_uint ("max-bframes",
           "Max B-Frames", "Number of B-frames between I and P", 0, 10, 0,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiEncoderH265:refs:
@@ -2926,7 +2929,8 @@ gst_vaapi_encoder_h265_class_init (GstVaapiEncoderH265Class * klass)
   g_object_class_install_property (object_class,
       ENCODER_H265_PROP_NUM_REF_FRAMES, g_param_spec_uint ("refs",
           "Number of Reference Frames", "Number of reference frames", 1, 3, 1,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiEncoderH265:init-qp:
@@ -2936,7 +2940,8 @@ gst_vaapi_encoder_h265_class_init (GstVaapiEncoderH265Class * klass)
   g_object_class_install_property (object_class, ENCODER_H265_PROP_INIT_QP,
       g_param_spec_uint ("init-qp",
           "Initial QP", "Initial quantizer value", 0, 51, 26,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiEncoderH265:min-qp:
@@ -2946,7 +2951,8 @@ gst_vaapi_encoder_h265_class_init (GstVaapiEncoderH265Class * klass)
   g_object_class_install_property (object_class, ENCODER_H265_PROP_MIN_QP,
       g_param_spec_uint ("min-qp",
           "Minimum QP", "Minimum quantizer value", 0, 51, 1,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiEncoderH265:max-qp:
@@ -2958,7 +2964,8 @@ gst_vaapi_encoder_h265_class_init (GstVaapiEncoderH265Class * klass)
   g_object_class_install_property (object_class, ENCODER_H265_PROP_MAX_QP,
       g_param_spec_uint ("max-qp",
           "Maximum QP", "Maximum quantizer value", 0, 51, 51,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiEncoderH265:qp-ip:
@@ -2971,7 +2978,9 @@ gst_vaapi_encoder_h265_class_init (GstVaapiEncoderH265Class * klass)
       g_param_spec_int ("qp-ip",
           "Difference of QP between I and P frame",
           "Difference of QP between I and P frame (available only on CQP)",
-          -51, 51, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          -51, 51, 0,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiEncoderH265:qp-ib:
@@ -2983,7 +2992,9 @@ gst_vaapi_encoder_h265_class_init (GstVaapiEncoderH265Class * klass)
       g_param_spec_int ("qp-ib",
           "Difference of QP between I and B frame",
           "Difference of QP between I and B frame (available only on CQP)",
-          -51, 51, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          -51, 51, 0,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /* FIXME: there seems to be issues with multi-slice encoding */
   /**
@@ -2995,7 +3006,9 @@ gst_vaapi_encoder_h265_class_init (GstVaapiEncoderH265Class * klass)
       g_param_spec_uint ("num-slices",
           "Number of Slices",
           "Number of slices per frame",
-          1, 200, 1, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          1, 200, 1,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiEncoderH265:cpb-length:
@@ -3006,7 +3019,8 @@ gst_vaapi_encoder_h265_class_init (GstVaapiEncoderH265Class * klass)
       g_param_spec_uint ("cpb-length",
           "CPB Length", "Length of the CPB buffer in milliseconds",
           1, 10000, DEFAULT_CPB_LENGTH,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiEncoderH265:mbbrc:
@@ -3019,7 +3033,8 @@ gst_vaapi_encoder_h265_class_init (GstVaapiEncoderH265Class * klass)
           "Macroblock level Bitrate Control",
           "Macroblock level Bitrate Control",
           GST_VAAPI_TYPE_ENCODER_MBBRC, GST_VAAPI_ENCODER_MBBRC_AUTO,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiEncoderH265:low_delay_b:
@@ -3031,7 +3046,9 @@ gst_vaapi_encoder_h265_class_init (GstVaapiEncoderH265Class * klass)
           "Enable low delay b",
           "Transforms P frames into predictive B frames."
           " Enable it when P frames are not supported.",
-          FALSE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          FALSE,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 }
 
 /**

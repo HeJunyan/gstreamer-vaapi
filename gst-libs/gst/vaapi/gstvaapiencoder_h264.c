@@ -3834,7 +3834,8 @@ gst_vaapi_encoder_h264_class_init (GstVaapiEncoderH264Class * klass)
           "Rate Control", "Rate control mode",
           g_class_data.rate_control_get_type (),
           g_class_data.default_rate_control,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiEncoderH264:tune:
@@ -3847,7 +3848,8 @@ gst_vaapi_encoder_h264_class_init (GstVaapiEncoderH264Class * klass)
           "Encoder tuning option",
           g_class_data.encoder_tune_get_type (),
           g_class_data.default_encoder_tune,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiEncoderH264:max-bframes:
@@ -3858,7 +3860,8 @@ gst_vaapi_encoder_h264_class_init (GstVaapiEncoderH264Class * klass)
       ENCODER_H264_PROP_MAX_BFRAMES,
       g_param_spec_uint ("max-bframes",
           "Max B-Frames", "Number of B-frames between I and P", 0, 10, 0,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiEncoderH264:refs:
@@ -3870,7 +3873,8 @@ gst_vaapi_encoder_h264_class_init (GstVaapiEncoderH264Class * klass)
       ENCODER_H264_PROP_NUM_REF_FRAMES,
       g_param_spec_uint ("refs", "Number of Reference Frames",
           "Number of reference frames", 1, 8, 1,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiEncoderH264:init-qp:
@@ -3881,7 +3885,8 @@ gst_vaapi_encoder_h264_class_init (GstVaapiEncoderH264Class * klass)
       ENCODER_H264_PROP_INIT_QP,
       g_param_spec_uint ("init-qp",
           "Initial QP", "Initial quantizer value", 0, 51, 26,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiEncoderH264:min-qp:
@@ -3892,7 +3897,8 @@ gst_vaapi_encoder_h264_class_init (GstVaapiEncoderH264Class * klass)
       ENCODER_H264_PROP_MIN_QP,
       g_param_spec_uint ("min-qp",
           "Minimum QP", "Minimum quantizer value", 0, 51, 1,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiEncoderH264:max-qp:
@@ -3905,7 +3911,8 @@ gst_vaapi_encoder_h264_class_init (GstVaapiEncoderH264Class * klass)
       ENCODER_H264_PROP_MAX_QP,
       g_param_spec_uint ("max-qp",
           "Maximum QP", "Maximum quantizer value", 0, 51, 51,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiEncoderH264:qp-ip:
@@ -3918,7 +3925,9 @@ gst_vaapi_encoder_h264_class_init (GstVaapiEncoderH264Class * klass)
       g_param_spec_int ("qp-ip",
           "Difference of QP between I and P frame",
           "Difference of QP between I and P frame (available only on CQP)",
-          -51, 51, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          -51, 51, 0,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiEncoderH264:qp-ib:
@@ -3931,7 +3940,9 @@ gst_vaapi_encoder_h264_class_init (GstVaapiEncoderH264Class * klass)
       g_param_spec_int ("qp-ib",
           "Difference of QP between I and B frame",
           "Difference of QP between I and B frame (available only on CQP)",
-          -51, 51, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          -51, 51, 0,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiEncoderH264:num-slices:
@@ -3943,7 +3954,9 @@ gst_vaapi_encoder_h264_class_init (GstVaapiEncoderH264Class * klass)
       g_param_spec_uint ("num-slices",
           "Number of Slices",
           "Number of slices per frame",
-          1, 200, 1, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          1, 200, 1,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiEncoderH264:cabac:
@@ -3957,7 +3970,9 @@ gst_vaapi_encoder_h264_class_init (GstVaapiEncoderH264Class * klass)
       g_param_spec_boolean ("cabac",
           "Enable CABAC",
           "Enable CABAC entropy coding mode",
-          FALSE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          FALSE,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiEncoderH264:dct8x8:
@@ -3971,7 +3986,9 @@ gst_vaapi_encoder_h264_class_init (GstVaapiEncoderH264Class * klass)
       g_param_spec_boolean ("dct8x8",
           "Enable 8x8 DCT",
           "Enable adaptive use of 8x8 transforms in I-frames",
-          FALSE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          FALSE,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiEncoderH264:mbbrc:
@@ -3985,7 +4002,8 @@ gst_vaapi_encoder_h264_class_init (GstVaapiEncoderH264Class * klass)
           "Macroblock level Bitrate Control",
           "Macroblock level Bitrate Control",
           GST_VAAPI_TYPE_ENCODER_MBBRC, GST_VAAPI_ENCODER_MBBRC_AUTO,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiEncoderH264:temporal-levels:
@@ -3998,7 +4016,8 @@ gst_vaapi_encoder_h264_class_init (GstVaapiEncoderH264Class * klass)
           "temporal levels",
           "Number of temporal levels in the encoded stream ",
           MIN_TEMPORAL_LEVELS, MAX_TEMPORAL_LEVELS, MIN_TEMPORAL_LEVELS,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiEncoderH264:prediction-type:
@@ -4012,7 +4031,8 @@ gst_vaapi_encoder_h264_class_init (GstVaapiEncoderH264Class * klass)
           "Reference Picture Selection Modes",
           gst_vaapi_encoder_h264_prediction_type (),
           GST_VAAPI_ENCODER_H264_PREDICTION_DEFAULT,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiEncoderH264:cpb-length:
@@ -4024,7 +4044,8 @@ gst_vaapi_encoder_h264_class_init (GstVaapiEncoderH264Class * klass)
       g_param_spec_uint ("cpb-length",
           "CPB Length", "Length of the CPB buffer in milliseconds",
           1, 10000, DEFAULT_CPB_LENGTH,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiEncoderH264:num-views:
@@ -4036,7 +4057,9 @@ gst_vaapi_encoder_h264_class_init (GstVaapiEncoderH264Class * klass)
       g_param_spec_uint ("num-views",
           "Number of Views",
           "Number of Views for MVC encoding",
-          1, MAX_NUM_VIEWS, 1, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          1, MAX_NUM_VIEWS, 1,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiEncoderH264:view-ids:
@@ -4050,7 +4073,8 @@ gst_vaapi_encoder_h264_class_init (GstVaapiEncoderH264Class * klass)
           g_param_spec_uint ("view-id-value", "View id value",
               "view id values used for mvc encoding", 0, MAX_VIEW_ID, 0,
               G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS),
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiEncoderH264:aud:
@@ -4061,7 +4085,8 @@ gst_vaapi_encoder_h264_class_init (GstVaapiEncoderH264Class * klass)
       ENCODER_H264_PROP_AUD,
       g_param_spec_boolean ("aud", "AU delimiter",
           "Use AU (Access Unit) delimeter", FALSE,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiEncoderH264:Compliance Mode:
@@ -4076,7 +4101,9 @@ gst_vaapi_encoder_h264_class_init (GstVaapiEncoderH264Class * klass)
           "Spec Compliance Mode",
           "Tune Encode quality/performance by relaxing specification compliance restrictions",
           gst_vaapi_encoder_h264_compliance_mode_type (),
-          GST_VAAPI_ENCODER_H264_COMPLIANCE_MODE_STRICT, G_PARAM_READWRITE));
+          GST_VAAPI_ENCODER_H264_COMPLIANCE_MODE_STRICT,
+          G_PARAM_READWRITE | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiEncoderH264:quality_factor:
@@ -4089,7 +4116,9 @@ gst_vaapi_encoder_h264_class_init (GstVaapiEncoderH264Class * klass)
           "Quality factor for ICQ/QVBR",
           "quality factor for ICQ/QVBR bitrate control mode"
           "(low value means higher-quality, higher value means lower-quality)",
-          1, 51, 26, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          1, 51, 26,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 }
 
 /**

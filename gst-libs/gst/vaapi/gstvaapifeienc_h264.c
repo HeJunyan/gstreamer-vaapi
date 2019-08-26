@@ -2124,7 +2124,8 @@ gst_vaapi_feienc_h264_class_init (GstVaapiFeiEncH264Class * klass)
           "Rate Control", "Rate control mode",
           fei_enc_class_data.rate_control_get_type (),
           fei_enc_class_data.default_rate_control,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiFeiEncH264:tune:
@@ -2137,7 +2138,8 @@ gst_vaapi_feienc_h264_class_init (GstVaapiFeiEncH264Class * klass)
           "Encoder tuning option",
           fei_enc_class_data.encoder_tune_get_type (),
           fei_enc_class_data.default_encoder_tune,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiFeiEncH264:max-bframes:
@@ -2148,7 +2150,8 @@ gst_vaapi_feienc_h264_class_init (GstVaapiFeiEncH264Class * klass)
       FEI_H264_ENC_PROP_MAX_BFRAMES,
       g_param_spec_uint ("max-bframes",
           "Max B-Frames", "Number of B-frames between I and P", 0, 10, 0,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiFeiEncH264:init-qp:
@@ -2159,7 +2162,8 @@ gst_vaapi_feienc_h264_class_init (GstVaapiFeiEncH264Class * klass)
       FEI_H264_ENC_PROP_INIT_QP,
       g_param_spec_uint ("init-qp",
           "Initial QP", "Initial quantizer value", 1, 51, 26,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiFeiEncH264:min-qp:
@@ -2170,7 +2174,8 @@ gst_vaapi_feienc_h264_class_init (GstVaapiFeiEncH264Class * klass)
       FEI_H264_ENC_PROP_MIN_QP,
       g_param_spec_uint ("min-qp",
           "Minimum QP", "Minimum quantizer value", 1, 51, 1,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiFeiEncH264:num-slices:
@@ -2182,7 +2187,9 @@ gst_vaapi_feienc_h264_class_init (GstVaapiFeiEncH264Class * klass)
       g_param_spec_uint ("num-slices",
           "Number of Slices",
           "Number of slices per frame",
-          1, 200, 1, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          1, 200, 1,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiFeiEncH264:cabac:
@@ -2196,7 +2203,9 @@ gst_vaapi_feienc_h264_class_init (GstVaapiFeiEncH264Class * klass)
       g_param_spec_boolean ("cabac",
           "Enable CABAC",
           "Enable CABAC entropy coding mode",
-          FALSE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          FALSE,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiFeiEncH264:dct8x8:
@@ -2210,7 +2219,9 @@ gst_vaapi_feienc_h264_class_init (GstVaapiFeiEncH264Class * klass)
       g_param_spec_boolean ("dct8x8",
           "Enable 8x8 DCT",
           "Enable adaptive use of 8x8 transforms in I-frames",
-          FALSE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          FALSE,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiFeiEncH264:cpb-length:
@@ -2222,7 +2233,8 @@ gst_vaapi_feienc_h264_class_init (GstVaapiFeiEncH264Class * klass)
       g_param_spec_uint ("cpb-length",
           "CPB Length", "Length of the CPB buffer in milliseconds",
           1, 10000, DEFAULT_CPB_LENGTH,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiFeiEncH264:num-views:
@@ -2234,7 +2246,9 @@ gst_vaapi_feienc_h264_class_init (GstVaapiFeiEncH264Class * klass)
       g_param_spec_uint ("num-views",
           "Number of Views",
           "Number of Views for MVC encoding",
-          1, MAX_NUM_VIEWS, 1, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          1, MAX_NUM_VIEWS, 1,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
   /**
    * GstVaapiFeiEncH264:view-ids:
    *
@@ -2247,7 +2261,8 @@ gst_vaapi_feienc_h264_class_init (GstVaapiFeiEncH264Class * klass)
           g_param_spec_uint ("view-id-value", "View id value",
               "view id values used for mvc encoding", 0, MAX_VIEW_ID, 0,
               G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS),
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
   /**
    * GstVaapiFeiEncH264:num-ref:
    *
@@ -2258,7 +2273,9 @@ gst_vaapi_feienc_h264_class_init (GstVaapiFeiEncH264Class * klass)
       g_param_spec_uint ("num-ref",
           "Num Ref",
           "reference frame number",
-          1, 6, 1, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          1, 6, 1,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiFeiEncH264:num_mv_predictors_l0:
@@ -2270,7 +2287,9 @@ gst_vaapi_feienc_h264_class_init (GstVaapiFeiEncH264Class * klass)
       g_param_spec_uint ("num-mvpredict-l0",
           "Num mv predict l0",
           "Indicate how many predictors should be used for l0",
-          0, 3, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          0, 3, 0,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
   /**
    * GstVaapiFeiEncH264:num_mv_predictors_l1:
    *
@@ -2281,7 +2300,9 @@ gst_vaapi_feienc_h264_class_init (GstVaapiFeiEncH264Class * klass)
       g_param_spec_uint ("num-mvpredict-l1",
           "Num mv predict l1",
           "Indicate how many predictors should be used for l1",
-          0, 3, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          0, 3, 0,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
   /**
    * GstVaapiFeiEncH264:search-window:
    */
@@ -2292,7 +2313,8 @@ gst_vaapi_feienc_h264_class_init (GstVaapiFeiEncH264Class * klass)
           "Specify one of the predefined search path",
           GST_VAAPI_TYPE_FEI_H264_SEARCH_WINDOW,
           GST_VAAPI_FEI_H264_SEARCH_WINDOW_DEFAULT,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
   /**
    * GstVaapiFeiEncH264:len-sp:
    */
@@ -2301,7 +2323,9 @@ gst_vaapi_feienc_h264_class_init (GstVaapiFeiEncH264Class * klass)
       g_param_spec_uint ("len-sp",
           "len sp",
           "This value defines number of search units in search path",
-          1, 63, 32, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          1, 63, 32,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiFeiEncH264:search-path:
@@ -2313,7 +2337,8 @@ gst_vaapi_feienc_h264_class_init (GstVaapiFeiEncH264Class * klass)
           "Specify search path",
           GST_VAAPI_TYPE_FEI_H264_SEARCH_PATH,
           GST_VAAPI_FEI_H264_SEARCH_PATH_DEFAULT,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiFeiEncH264:ref-width:
@@ -2323,7 +2348,9 @@ gst_vaapi_feienc_h264_class_init (GstVaapiFeiEncH264Class * klass)
       g_param_spec_uint ("ref-width",
           "ref width",
           "Width of search region in pixel, must be multiple of 4",
-          4, 64, 32, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          4, 64, 32,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiFeiEncH264:ref-height:
@@ -2333,7 +2360,9 @@ gst_vaapi_feienc_h264_class_init (GstVaapiFeiEncH264Class * klass)
       g_param_spec_uint ("ref-height",
           "ref height",
           "Height of search region in pixel, must be multiple of 4",
-          4, 32, 32, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          4, 32, 32,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
   /**
    * GstVaapiFeiEncH264:submb-mask:
    * Defines the bit-mask for disabling sub-partition
@@ -2346,7 +2375,8 @@ gst_vaapi_feienc_h264_class_init (GstVaapiFeiEncH264Class * klass)
           "defines the bit-mask for disabling sub mb partition",
           GST_VAAPI_TYPE_FEI_H264_SUB_MB_PART_MASK,
           GST_VAAPI_FEI_H264_SUB_MB_PART_MASK_DEFAULT,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiFeiEncH264:subpel-mode:
@@ -2358,7 +2388,8 @@ gst_vaapi_feienc_h264_class_init (GstVaapiFeiEncH264Class * klass)
           "Sub pixel precision for motion estimation",
           GST_VAAPI_TYPE_FEI_H264_SUB_PEL_MODE,
           GST_VAAPI_FEI_H264_SUB_PEL_MODE_DEFAULT,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
   /**
    * GstVaapiFeiEncH264:intrapart-mask:
    */
@@ -2369,7 +2400,8 @@ gst_vaapi_feienc_h264_class_init (GstVaapiFeiEncH264Class * klass)
           "What block and sub-block partitions are disabled for intra MBs",
           GST_VAAPI_TYPE_FEI_H264_INTRA_PART_MASK,
           GST_VAAPI_FEI_H264_INTRA_PART_MASK_DEFAULT,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
   /**
    * GstVaapiFeiEncH264:intra-sad:
    */
@@ -2379,7 +2411,8 @@ gst_vaapi_feienc_h264_class_init (GstVaapiFeiEncH264Class * klass)
           "intra sad",
           "Specifies distortion measure adjustments used in the motion search SAD comparison for intra MB",
           GST_VAAPI_TYPE_FEI_H264_SAD_MODE, GST_VAAPI_FEI_H264_SAD_MODE_DEFAULT,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiFeiEncH264:inter-sad:
@@ -2390,7 +2423,8 @@ gst_vaapi_feienc_h264_class_init (GstVaapiFeiEncH264Class * klass)
           "inter sad",
           "Specifies distortion measure adjustments used in the motion search SAD comparison for inter MB",
           GST_VAAPI_TYPE_FEI_H264_SAD_MODE, GST_VAAPI_FEI_H264_SAD_MODE_DEFAULT,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiFeiEncH264:adaptive-search:
@@ -2400,7 +2434,9 @@ gst_vaapi_feienc_h264_class_init (GstVaapiFeiEncH264Class * klass)
       g_param_spec_boolean ("adaptive-search",
           "adaptive-search",
           "Enable adaptive search",
-          FALSE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          FALSE,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiFeiEncH264:multi-predL0:
@@ -2410,7 +2446,9 @@ gst_vaapi_feienc_h264_class_init (GstVaapiFeiEncH264Class * klass)
       g_param_spec_boolean ("multi-predL0",
           "multi predL0",
           "Enable multi prediction for ref L0 list",
-          FALSE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          FALSE,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 
   /**
    * GstVaapiFeiEncH264:multi-predL0:
@@ -2420,7 +2458,9 @@ gst_vaapi_feienc_h264_class_init (GstVaapiFeiEncH264Class * klass)
       g_param_spec_boolean ("multi-predL1",
           "multi predL1",
           "Enable multi prediction for ref L1 list",
-          FALSE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          FALSE,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT |
+          G_PARAM_FLAG_VAAPI_ENCODER_EXPOSURE));
 }
 
 /**
