@@ -768,22 +768,6 @@ gst_vaapi_encoder_jpeg_finalize (GObject * object)
   G_OBJECT_CLASS (gst_vaapi_encoder_jpeg_parent_class)->finalize (object);
 }
 
-static GstVaapiEncoderStatus
-_gst_vaapi_encoder_jpeg_set_property (GstVaapiEncoder * base_encoder,
-    gint prop_id, const GValue * value)
-{
-  GstVaapiEncoderJpeg *const encoder = GST_VAAPI_ENCODER_JPEG (base_encoder);
-
-  switch (prop_id) {
-    case GST_VAAPI_ENCODER_JPEG_PROP_QUALITY:
-      encoder->quality = g_value_get_uint (value);
-      break;
-    default:
-      return GST_VAAPI_ENCODER_STATUS_ERROR_INVALID_PARAMETER;
-  }
-  return GST_VAAPI_ENCODER_STATUS_SUCCESS;
-}
-
 /**
  * @ENCODER_JPEG_PROP_RATECONTROL: Rate control (#GstVaapiRateControl).
  * @ENCODER_JPEG_PROP_TUNE: The tuning options (#GstVaapiEncoderTune).
@@ -863,7 +847,6 @@ gst_vaapi_encoder_jpeg_class_init (GstVaapiEncoderJpegClass * klass)
   encoder_class->reordering = gst_vaapi_encoder_jpeg_reordering;
   encoder_class->encode = gst_vaapi_encoder_jpeg_encode;
   encoder_class->flush = gst_vaapi_encoder_jpeg_flush;
-  encoder_class->set_property = _gst_vaapi_encoder_jpeg_set_property;
 
   object_class->set_property = gst_vaapi_encoder_jpeg_set_property;
   object_class->get_property = gst_vaapi_encoder_jpeg_get_property;
