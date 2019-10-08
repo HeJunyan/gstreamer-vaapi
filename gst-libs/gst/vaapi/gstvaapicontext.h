@@ -41,6 +41,7 @@ G_BEGIN_DECLS
 typedef struct _GstVaapiConfigInfoEncoder GstVaapiConfigInfoEncoder;
 typedef struct _GstVaapiContextInfo GstVaapiContextInfo;
 typedef struct _GstVaapiContext GstVaapiContext;
+typedef struct _GstVaapiConfig GstVaapiConfig;
 
 /**
  * GstVaapiContextUsage:
@@ -109,13 +110,25 @@ struct _GstVaapiContext
   GstVaapiContextInfo info;
   VAProfile va_profile;
   VAEntrypoint va_entrypoint;
-  VAConfigID va_config;
+  GstVaapiConfig *config;
   GPtrArray *surfaces;
   GstVaapiVideoPool *surfaces_pool;
   GPtrArray *overlays[2];
   guint overlay_id;
   gboolean reset_on_resize;
   GstVaapiConfigSurfaceAttributes *attribs;
+};
+
+/**
+ * GstVaapiConfig:
+ *
+ * A VA config wrapper.
+ */
+struct _GstVaapiConfig
+{
+  gint ref_count;
+  GstVaapiDisplay *display;
+  GstVaapiID object_id;
 };
 
 G_GNUC_INTERNAL
@@ -161,6 +174,19 @@ gst_vaapi_context_ref (GstVaapiContext * context);
 G_GNUC_INTERNAL
 void
 gst_vaapi_context_unref (GstVaapiContext * context);
+
+G_GNUC_INTERNAL
+GstVaapiConfig *
+gst_vaapi_config_new (GstVaapiDisplay * display,
+    const GstVaapiContextInfo * cip);
+
+G_GNUC_INTERNAL
+GstVaapiConfig *
+gst_vaapi_config_ref (GstVaapiConfig * config);
+
+G_GNUC_INTERNAL
+void
+gst_vaapi_config_unref (GstVaapiConfig * config);
 
 G_END_DECLS
 

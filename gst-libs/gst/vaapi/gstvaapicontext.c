@@ -55,16 +55,8 @@ ensure_attributes (GstVaapiContext * context)
 
   context->attribs =
       gst_vaapi_config_surface_attributes_get (context->display,
-      context->va_config);
+      (VAConfigID) (context->config->object_id));
   return (context->attribs != NULL);
-}
-
-static inline gboolean
-context_get_attribute (GstVaapiContext * context, VAConfigAttribType type,
-    guint * out_value_ptr)
-{
-  return gst_vaapi_get_config_attribute (context->display,
-      context->va_profile, context->va_entrypoint, type, out_value_ptr);
 }
 
 static void
@@ -95,16 +87,6 @@ context_destroy (GstVaapiContext * context)
     if (!vaapi_check_status (status, "vaDestroyContext()"))
       GST_WARNING ("failed to destroy context 0x%08x", context_id);
     context->object_id = VA_INVALID_ID;
-  }
-
-  if (context->va_config != VA_INVALID_ID) {
-    GST_VAAPI_DISPLAY_LOCK (display);
-    status = vaDestroyConfig (GST_VAAPI_DISPLAY_VADISPLAY (display),
-        context->va_config);
-    GST_VAAPI_DISPLAY_UNLOCK (display);
-    if (!vaapi_check_status (status, "vaDestroyConfig()"))
-      GST_WARNING ("failed to destroy config 0x%08x", context->va_config);
-    context->va_config = VA_INVALID_ID;
   }
 
   if (context->attribs) {
@@ -176,6 +158,8 @@ context_create (GstVaapiContext * context)
   gboolean success = FALSE;
   guint i;
 
+  g_assert (context->config);
+
   if (!context->surfaces && !context_create_surfaces (context))
     goto cleanup;
 
@@ -196,8 +180,9 @@ context_create (GstVaapiContext * context)
 
   GST_VAAPI_DISPLAY_LOCK (display);
   status = vaCreateContext (GST_VAAPI_DISPLAY_VADISPLAY (display),
-      context->va_config, cip->width, cip->height, VA_PROGRESSIVE,
-      (VASurfaceID *) surfaces->data, surfaces->len, &context_id);
+      (VAConfigID) context->config->object_id, cip->width, cip->height,
+      VA_PROGRESSIVE, (VASurfaceID *) surfaces->data, surfaces->len,
+      &context_id);
   GST_VAAPI_DISPLAY_UNLOCK (display);
   if (!vaapi_check_status (status, "vaCreateContext()"))
     goto cleanup;
@@ -213,20 +198,23 @@ cleanup:
 }
 
 static gboolean
-config_create (GstVaapiContext * context)
+config_create (GstVaapiDisplay * const display,
+    const GstVaapiContextInfo * const cip, VAConfigID * va_config)
 {
-  const GstVaapiContextInfo *const cip = &context->info;
-  GstVaapiDisplay *const display = context->display;
   VAConfigAttrib attribs[7], *attrib;
   VAStatus status;
   guint value, va_chroma_format, attrib_index;
+  VAProfile va_profile;
+  VAEntrypoint va_entrypoint;
 
   /* Reset profile and entrypoint */
-  if (!cip->profile || !cip->entrypoint)
+  if (!cip->profile || !cip->entrypoint) {
+    GST_WARNING ("Failed to create context because invalid"
+        " profile or entrypoint");
     goto cleanup;
-  context->va_profile = gst_vaapi_profile_get_va_profile (cip->profile);
-  context->va_entrypoint =
-      gst_vaapi_entrypoint_get_va_entrypoint (cip->entrypoint);
+  }
+  va_profile = gst_vaapi_profile_get_va_profile (cip->profile);
+  va_entrypoint = gst_vaapi_entrypoint_get_va_entrypoint (cip->entrypoint);
 
   attrib_index = 0;
   attrib = &attribs[attrib_index];
@@ -237,7 +225,8 @@ config_create (GstVaapiContext * context)
   if (!va_chroma_format)
     goto cleanup;
   attrib->type = VAConfigAttribRTFormat;
-  if (!context_get_attribute (context, attrib->type, &value))
+  if (!gst_vaapi_get_config_attribute (display, va_profile,
+          va_entrypoint, attrib->type, &value))
     goto cleanup;
   if (!(value & va_chroma_format)) {
     GST_ERROR ("unsupported chroma format (%s)",
@@ -259,7 +248,8 @@ config_create (GstVaapiContext * context)
       va_rate_control = from_GstVaapiRateControl (config->rc_mode);
       if (va_rate_control != VA_RC_NONE) {
         attrib->type = VAConfigAttribRateControl;
-        if (!context_get_attribute (context, attrib->type, &value))
+        if (!gst_vaapi_get_config_attribute (display, va_profile,
+                va_entrypoint, attrib->type, &value))
           goto cleanup;
 
         if ((value & va_rate_control) != va_rate_control) {
@@ -274,7 +264,8 @@ config_create (GstVaapiContext * context)
       /* Packed headers */
       if (config->packed_headers) {
         attrib->type = VAConfigAttribEncPackedHeaders;
-        if (!context_get_attribute (context, attrib->type, &value))
+        if (!gst_vaapi_get_config_attribute (display, va_profile, va_entrypoint,
+                attrib->type, &value))
           goto cleanup;
 
         if ((value & config->packed_headers) != config->packed_headers) {
@@ -288,7 +279,8 @@ config_create (GstVaapiContext * context)
       }
       if (cip->profile == GST_VAAPI_PROFILE_JPEG_BASELINE) {
         attrib->type = VAConfigAttribEncJPEG;
-        if (!context_get_attribute (context, attrib->type, &value))
+        if (!gst_vaapi_get_config_attribute (display, va_profile, va_entrypoint,
+                attrib->type, &value))
           goto cleanup;
         attrib->value = value;
         attrib = &attribs[++attrib_index];
@@ -299,7 +291,8 @@ config_create (GstVaapiContext * context)
         VAConfigAttribValEncROI *roi_config;
 
         attrib->type = VAConfigAttribEncROI;
-        if (!context_get_attribute (context, attrib->type, &value))
+        if (!gst_vaapi_get_config_attribute (display, va_profile, va_entrypoint,
+                attrib->type, &value))
           goto cleanup;
         roi_config = (VAConfigAttribValEncROI *) & value;
         if (roi_config->bits.num_roi_regions != config->roi_num_supported) {
@@ -335,8 +328,7 @@ config_create (GstVaapiContext * context)
 
   GST_VAAPI_DISPLAY_LOCK (display);
   status = vaCreateConfig (GST_VAAPI_DISPLAY_VADISPLAY (display),
-      context->va_profile, context->va_entrypoint, attribs, attrib_index,
-      &context->va_config);
+      va_profile, va_entrypoint, attribs, attrib_index, va_config);
   GST_VAAPI_DISPLAY_UNLOCK (display);
   if (!vaapi_check_status (status, "vaCreateConfig()"))
     goto cleanup;
@@ -387,7 +379,7 @@ gst_vaapi_context_init (GstVaapiContext * context,
   if (!cip->chroma_type)
     cip->chroma_type = DEFAULT_CHROMA_TYPE;
 
-  context->va_config = VA_INVALID_ID;
+  context->config = NULL;
   context->reset_on_resize = TRUE;
 
   context->attribs = NULL;
@@ -396,8 +388,29 @@ gst_vaapi_context_init (GstVaapiContext * context,
 static void
 gst_vaapi_context_finalize (GstVaapiContext * context)
 {
+  if (context->config)
+    gst_vaapi_config_unref (context->config);
+  context->config = NULL;
   context_destroy (context);
   context_destroy_surfaces (context);
+}
+
+static void
+gst_vaapi_config_finalize (GstVaapiConfig * config)
+{
+  GstVaapiDisplay *const display = config->display;
+  VAStatus status;
+
+  if (config->object_id != VA_INVALID_ID) {
+    GST_VAAPI_DISPLAY_LOCK (display);
+    status = vaDestroyConfig (GST_VAAPI_DISPLAY_VADISPLAY (display),
+        config->object_id);
+    GST_VAAPI_DISPLAY_UNLOCK (display);
+    if (!vaapi_check_status (status, "vaDestroyConfig()"))
+      GST_WARNING ("failed to destroy config 0x%08x",
+          (VAConfigID) (config->object_id));
+    config->object_id = VA_INVALID_ID;
+  }
 }
 
 /**
@@ -421,6 +434,12 @@ gst_vaapi_context_new (GstVaapiDisplay * display,
   g_return_val_if_fail (cip->entrypoint, NULL);
   g_return_val_if_fail (display, NULL);
 
+  if (!cip->profile || !cip->entrypoint) {
+    GST_WARNING ("Failed to create context because invalid"
+        " profile or entrypoint");
+    return NULL;
+  }
+
   context = g_slice_new0 (GstVaapiContext);
   if (!context)
     return NULL;
@@ -430,7 +449,8 @@ gst_vaapi_context_new (GstVaapiDisplay * display,
   context->ref_count = 1;
   gst_vaapi_context_init (context, cip);
 
-  if (!config_create (context))
+  context->config = gst_vaapi_config_new (display, &context->info);
+  if (!context->config)
     goto error;
 
   /* this means we don't want to create a VAcontext */
@@ -514,11 +534,20 @@ gst_vaapi_context_reset (GstVaapiContext * context,
 
   if (reset_surfaces)
     context_destroy_surfaces (context);
-  if (reset_config)
+  if (reset_config) {
+    gst_vaapi_config_unref (context->config);
+    context->config = NULL;
     context_destroy (context);
+  }
 
-  if (reset_config && !(config_create (context) && context_create (context)))
-    return FALSE;
+  if (reset_config) {
+    context->config = gst_vaapi_config_new (context->display, &context->info);
+    if (!context->config)
+      return FALSE;
+    if (!context_create (context))
+      return FALSE;
+  }
+
   if (reset_surfaces && !context_create_surfaces (context))
     return FALSE;
   else if (grow_surfaces && !context_ensure_surfaces (context))
@@ -693,5 +722,82 @@ gst_vaapi_context_unref (GstVaapiContext * context)
     gst_vaapi_context_finalize (context);
     gst_vaapi_display_replace (&context->display, NULL);
     g_slice_free (GstVaapiContext, context);
+  }
+}
+
+/**
+ * gst_vaapi_config_new:
+ * @display: a #GstVaapiDisplay
+ * @cip: a pointer to the #GstVaapiContextInfo
+ *
+ * Creates a new #GstVaapiConfig with the configuration specified by
+ * @cip, thus including profile, entry-point, encoded size and maximum
+ * number of reference frames reported by the bitstream.
+ *
+ * Return value: the newly allocated #GstVaapiConfig object
+ */
+GstVaapiConfig *
+gst_vaapi_config_new (GstVaapiDisplay * display,
+    const GstVaapiContextInfo * cip)
+{
+  GstVaapiConfig *config;
+  VAConfigID va_config;
+
+  g_return_val_if_fail (cip, NULL);
+  g_return_val_if_fail (cip->profile, NULL);
+  g_return_val_if_fail (cip->entrypoint, NULL);
+
+  config = g_slice_new0 (GstVaapiConfig);
+  if (!config)
+    return NULL;
+
+  config->display = gst_object_ref (display);
+  config->object_id = VA_INVALID_ID;
+  config->ref_count = 1;
+
+  if (!config_create (display, cip, &va_config)) {
+    gst_vaapi_config_unref (config);
+    return NULL;
+  }
+
+  config->object_id = va_config;
+  return config;
+}
+
+/**
+ * gst_vaapi_config_ref:
+ * @config: a #GstVaapiConfig
+ *
+ * Atomically increases the reference count of the given @config by one.
+ *
+ * Returns: The same @config argument
+ */
+GstVaapiConfig *
+gst_vaapi_config_ref (GstVaapiConfig * config)
+{
+  g_return_val_if_fail (config != NULL, NULL);
+
+  g_atomic_int_inc (&config->ref_count);
+
+  return config;
+}
+
+/**
+ * gst_vaapi_config_unref:
+ * @config: a #GstVaapiConfig
+ *
+ * Atomically decreases the reference count of the @config by one. If
+ * the reference count reaches zero, the object will be free'd.
+ */
+void
+gst_vaapi_config_unref (GstVaapiConfig * config)
+{
+  g_return_if_fail (config != NULL);
+  g_return_if_fail (config->ref_count > 0);
+
+  if (g_atomic_int_dec_and_test (&config->ref_count)) {
+    gst_vaapi_config_finalize (config);
+    gst_vaapi_display_replace (&config->display, NULL);
+    g_slice_free (GstVaapiConfig, config);
   }
 }
